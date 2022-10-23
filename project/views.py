@@ -1,14 +1,14 @@
 from project import app
-
+from flask import request, jsonify
 # /create_user
 # /create_category_record
 # /create_expense_record
 # /get_category
 # /get_list_record/<user>/
 # /get_list_category/<user>/
-user = {}
-category = {}
-record = {}
+user = []
+category = []
+record = []
 
 
 @app.route('/')
@@ -18,7 +18,18 @@ def index():
 
 @app.route('/create_user', methods=['POST'])
 def create_user():
-    pass
+    data = request.get_json()
+    name = data['name']
+    id = data['id']
+    FLAG = True
+    for i in range(len(user)):
+        if user[i]['id'] == id:
+            return 'Id is alredy exist', 400
+            FLAG = False
+
+    if FLAG:
+        user.append(dict({'name': name, 'id': id}))
+    return 'created', 200
 
 
 @app.route('/create_category_record', methods=['POST'])
