@@ -1,6 +1,5 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
 
 from project.db import db
@@ -20,21 +19,17 @@ class Record(MethodView):
 
 @blp.route("/record")
 class RecordList(MethodView):
-    # ПОПРАВИТИ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @blp.arguments(RecordQuerySchema, location='query', as_kwargs=True)
     @blp.response(200, RecordSchema(many=True))
     def get(self, **kwargs):
         user_id = kwargs.get('user_id')
         if not user_id:
             abort(400, message='User with this name is not exist')
+        query = RecordModel.query.filter(RecordModel.user_id == user_id)
         category_id = kwargs.get('category_id')
-        if user_id and not category_id:
-            query = RecordModel.query.filter(user_id == user_id)
+        if not category_id:
             return query
-        if category_id:
-            query = RecordModel.query.filter(and_(user_id == user_id,category_id == category_id))
-            return query
-
+        return query.filter(RecordModel.category_id == category_id)
 
     @blp.arguments(RecordSchema)
     @blp.response(200, RecordSchema)

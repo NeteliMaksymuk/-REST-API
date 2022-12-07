@@ -8,7 +8,7 @@ from project.schemas import UserSchema
 
 blp = Blueprint('user', __name__, description='Operations on user')
 
-#GOOD
+
 @blp.route("/user/<int:id>")
 class User(MethodView):
     @blp.response(200, UserSchema)
@@ -17,7 +17,7 @@ class User(MethodView):
         return user
 
 
-#GOOD
+
 @blp.route("/user")
 class UserList(MethodView):
     @blp.response(200, UserSchema(many=True))

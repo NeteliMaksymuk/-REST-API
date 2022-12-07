@@ -9,7 +9,7 @@ from project.schemas import CategorySchema
 
 blp = Blueprint('category', __name__, description='Operations on category')
 
-# GOOOD
+
 
 @blp.route("/category/<int:id>/")
 class Category(MethodView):
