@@ -12,3 +12,6 @@ webargs==8.2.0
 Werkzeug==2.2.2
 greenlet==2.0.1
 itsdangerous==2.1.2
+PyJWT==2.6.0
+flask-jwt-extended==4.4.4
+passlib==1.7.4
