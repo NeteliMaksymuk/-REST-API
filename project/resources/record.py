@@ -1,7 +1,7 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import IntegrityError
-
+from flask_jwt_extended import jwt_required
 from project.db import db
 from project.models import RecordModel, CategoryModel
 from project.schemas import RecordSchema, RecordQuerySchema
@@ -12,6 +12,7 @@ blp = Blueprint('record', __name__, description='Operations on record')
 @blp.route("/record/<int:id>")
 class Record(MethodView):
     @blp.response(200, RecordSchema)
+    @jwt_required()
     def get(self, id):
         record = RecordModel.query.get_or_404(id)
         return record
@@ -21,6 +22,7 @@ class Record(MethodView):
 class RecordList(MethodView):
     @blp.arguments(RecordQuerySchema, location='query', as_kwargs=True)
     @blp.response(200, RecordSchema(many=True))
+    @jwt_required()
     def get(self, **kwargs):
         user_id = kwargs.get('user_id')
         if not user_id:
@@ -33,6 +35,7 @@ class RecordList(MethodView):
 
     @blp.arguments(RecordSchema)
     @blp.response(200, RecordSchema)
+    @jwt_required()
     def post(self, data):
         record = RecordModel(**data)
         category = CategoryModel.query.get_or_404(data['category_id'])
