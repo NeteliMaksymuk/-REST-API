@@ -1,6 +1,6 @@
 from flask import jsonify
 from flask.views import MethodView
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required
 from flask_smorest import Blueprint, abort
 from passlib.handlers.pbkdf2 import pbkdf2_sha256
 from sqlalchemy.exc import IntegrityError
@@ -11,22 +11,18 @@ from project.schemas import UserSchema
 
 blp = Blueprint('user', __name__, description='Operations on user')
 
-# Add permissions for this user
+
 @blp.route("/user/<int:id>")
 class User(MethodView):
     @blp.response(200, UserSchema)
+    @jwt_required()
     def get(self, id):
         user = UserModel.query.get_or_404(id)
         return user
 
 
-
 @blp.route("/register")
 class UserList(MethodView):
-    # @blp.response(200, UserSchema(many=True))
-    # def get(self):
-    #     return UserModel.query.all()
-
     @blp.arguments(UserSchema)
     @blp.response(200, UserSchema)
     def post(self, data):
